@@ -41,13 +41,13 @@ void afficherA(Ast expr) {
                         printf(")");
 			break ;
                case VALEUR:
-                  	printf("%d", expr->valeur);
+                  	printf("%.2f", expr->valeur);
 			break ;
 	}
 }
 
-int evaluation(Ast expr) {
-    int denominateur ;
+double evaluation(Ast expr) {
+    double denominateur ;
 	switch(expr->nature)
 	{
 	  case OPERATION:
@@ -72,9 +72,17 @@ int evaluation(Ast expr) {
 			      exit(1);
 
 			case N_MOD:
-			  return evaluation(expr->gauche)%evaluation(expr->droite);
+			  if((evaluation(expr->gauche)==floor(evaluation(expr->gauche)))&&(evaluation(expr->droite)==evaluation(expr->droite)))
+			  return (int)evaluation(expr->gauche)%(int)evaluation(expr->droite);
+			  else{
+				  printf("ERREUR : mod avec décimal !\n");
+			      exit(1);
+			  }
 
 			case N_POW:
+			// printf("gauche=%lf",evaluation(expr->gauche));
+			// printf("droit=%lf",evaluation(expr->droite));
+			// printf("pow=%lf",pow(evaluation(expr->gauche), evaluation(expr->droite)));
 			  return pow(evaluation(expr->gauche), evaluation(expr->droite));
 			
 			default:
@@ -82,6 +90,7 @@ int evaluation(Ast expr) {
 		}
 
 	   case VALEUR:
+	   //printf("eval=%lf",expr->valeur);
 		return expr->valeur; 
 		
 	   default:

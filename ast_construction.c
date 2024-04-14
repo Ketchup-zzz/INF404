@@ -19,7 +19,7 @@ Ast creer_operation(TypeOperateur opr , Ast opde_gauche , Ast opde_droit)
       return expr ;
 }
 
-Ast creer_valeur(int val) { 
+Ast creer_valeur(double val) { 
       Ast expr ;
       expr = (Ast) malloc (sizeof(NoeudAst));
       expr->nature = VALEUR;

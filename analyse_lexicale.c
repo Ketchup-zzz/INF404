@@ -78,7 +78,7 @@
    //		soit un separateur,  soit le 1er caractere d'un lexeme
 
    void reconnaitre_lexeme() {
-      typedef enum {E_INIT, E_ENTIER,E_IDF,E_FIN} Etat_Automate ;
+      typedef enum {E_INIT, E_ENTIER,E_IDF,E_ENTIER_DECIMAL,E_FIN} Etat_Automate ;
       Etat_Automate etat=E_INIT;
 
      // on commence par lire et ignorer les separateurs
@@ -166,10 +166,12 @@
 					    lexeme_en_cours.nature = AFF;
 						etat=E_FIN;
 						break;
+					  case '.':
+                        etat = E_FIN;
+                        break;
 					//   case ':':
                		// 	lexeme_en_cours.nature = IDF;
                		// 	etat = E_FIN;
-			   			break;
 					  case ';':
                			lexeme_en_cours.nature = SEPINST;
                			etat = E_FIN;
@@ -206,17 +208,46 @@
 			switch(nature_caractere(caractere_courant())) {
 			    case CHIFFRE:
 		  			ajouter_caractere (lexeme_en_cours.chaine, caractere_courant()) ;
-                  			lexeme_en_cours.valeur = lexeme_en_cours.valeur * 10 + caractere_courant() - '0';
-                  	etat = E_ENTIER;
+                  	lexeme_en_cours.valeur = lexeme_en_cours.valeur * 10 + caractere_courant() - '0';
+							// lexeme_en_cours.valeur=atof(lexeme_en_cours.chaine);
+                  	//etat = E_ENTIER;
                   	avancer_car ();
-					break ;
+					break;
+
+			case SYMBOLE:
+            if (caractere_courant() == '.') 
+			{
+                ajouter_caractere(lexeme_en_cours.chaine, caractere_courant());
+                etat = E_ENTIER_DECIMAL; // changer etat en decimale
+                avancer_car();
+            } else {
+                 etat = E_FIN;
+            }
+            break;
 
 				default:
                   	etat = E_FIN;
           	} ;
+        break;
+	case E_ENTIER_DECIMAL: // handling the decimal part of a number
+    switch (nature_caractere(caractere_courant())) {
+        case CHIFFRE:
+            ajouter_caractere(lexeme_en_cours.chaine, caractere_courant());
+			lexeme_en_cours.valeur=atof(lexeme_en_cours.chaine);
+            //lexeme_en_cours.valdecimal = lexeme_en_cours.valdecimal*0.1 + (caractere_courant() - '0')*0.1;
+            // printf("%s",lexeme_en_cours.chaine);
+			// printf(" %lf",lexeme_en_cours.valeur);
+			// printf(" %lf",lexeme_courant().valeur);
+            avancer_car();
+            break;
+        default:
+            etat = E_FIN;
+    }
+    break;
 		
 	    case E_FIN:  // etat final
 		break ;
+
 	    
 	  } ; // fin du switch(etat)
 	} ; // fin du while (etat != fin)
@@ -274,6 +305,7 @@
 		case '=':
 		case ':':
 		case ';':
+		case '.':
             return 1;
 
         default:
@@ -329,7 +361,7 @@
             printf(", chaine = %s, ", l.chaine) ;
             switch(l.nature) {
                  case ENTIER:
-                      printf("valeur = %d", l.valeur);
+                      printf("valeur = %2f", l.valeur);
                  default:
                       break;
             } ;

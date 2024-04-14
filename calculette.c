@@ -24,7 +24,8 @@ int main (int argc, char *argv[]) {
 		exit(1) ;
    } ;	
    if (syntaxeCorrecte) {
-	printf(" \n RESULTAT = %d \n", evaluation(A));
+	//printf("%d",evaluation(A));
+	printf(" \n RESULTAT = %.2f\n", evaluation(A));
    } ;
 }
 		
