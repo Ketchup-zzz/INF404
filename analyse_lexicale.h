@@ -40,7 +40,7 @@
       unsigned int ligne;           // numero de ligne
       unsigned int colonne;         // numero de colonne
       char chaine[256];           // chaine de caracteres
-      int valeur;          // valeur d'un entier
+      double valeur;          // valeur d'un entier
    } Lexeme ; 
 
    void afficher(Lexeme l);
