@@ -9,7 +9,7 @@ typedef struct noeud {
 	TypeAst nature ;
 	TypeOperateur operateur ;
 	struct noeud *gauche, *droite ;
-      	int valeur ;
+      	double valeur ;
 } NoeudAst ;
 
 typedef NoeudAst *Ast ;
