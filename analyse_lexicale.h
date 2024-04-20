@@ -34,6 +34,7 @@
       SEPINST,  //;
       SIN,    //sin
       COS,    //cos
+      TAN,    //TAN
     } Nature_Lexeme ;
 
 

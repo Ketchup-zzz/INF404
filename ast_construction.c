@@ -27,6 +27,7 @@ Ast creer_valeur(double val) {
       return expr ;
 }
 
+//gauche est valeur,droit est NULL
 Ast creer_fonction(TypeOperateur opr , Ast x) 
 {
       Ast expr ;

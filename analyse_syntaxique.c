@@ -145,31 +145,56 @@
 				*A1=creer_operation(MOINS,NULL,A2);
 			    break;
 			case SIN:
-			    printf("%d\n",lexeme_courant().nature);
 			    avancer();
-				printf("%d\n",lexeme_courant().nature);
-				if(lexeme_courant().nature==PARO)
-				{
-					avancer();
-					printf("%d\n",lexeme_courant().nature);
-					Ast x;
-					rec_eag(&x);
-					avancer();
-					printf("%d\n",lexeme_courant().nature);
-					if(lexeme_courant().nature==PARF)
-					{
-						*A1=creer_fonction(SIN,x);
-						avancer();
-					}else{
-						printf("ERREUR : parenthese fermante attendue (ligne %u, colonne %u)\n",
-                                                    lexeme_courant().ligne, lexeme_courant().colonne);
-		  			    exit(1);
-					}
-				}else{
-					printf("ERREUR : parenthese ouvrante attendue (ligne %u, colonne %u)\n",
-                                                    lexeme_courant().ligne, lexeme_courant().colonne);
-		  			exit(1);
-				}
+                if(lexeme_courant().nature == PARO) {
+                    avancer();
+                    rec_eag(A1);
+                if(lexeme_courant().nature == PARF) {
+                    avancer();
+                    *A1 = creer_fonction(N_SIN, *A1);
+                } else {
+                    printf("ERREUR : parenthese fermante attendue (ligne %u, colonne %u)\n",lexeme_courant().ligne, lexeme_courant().colonne);
+                    exit(1);
+                }
+                } else {
+                    printf("Erreur : parenthèse ouvrante attendue après le SIN(ligne %u, colonne %u)\n",lexeme_courant().ligne, lexeme_courant().colonne);
+                    exit(1);
+                }
+                break;
+			case COS:
+			    avancer();
+                if(lexeme_courant().nature == PARO) {
+                    avancer();
+                    rec_eag(A1);
+                if(lexeme_courant().nature == PARF) {
+                    avancer();
+                    *A1 = creer_fonction(N_COS, *A1);
+                } else {
+                    printf("ERREUR : parenthese fermante attendue (ligne %u, colonne %u)\n",lexeme_courant().ligne, lexeme_courant().colonne);
+                    exit(1);
+                }
+                } else {
+                    printf("Erreur : parenthèse ouvrante attendue après le COS(ligne %u, colonne %u)\n",lexeme_courant().ligne, lexeme_courant().colonne);
+                    exit(1);
+                }
+                break;
+			case TAN:
+			    avancer();
+                if(lexeme_courant().nature == PARO) {
+                    avancer();
+                    rec_eag(A1);
+                if(lexeme_courant().nature == PARF) {
+                    avancer();
+                    *A1 = creer_fonction(N_TAN, *A1);
+                } else {
+                    printf("ERREUR : parenthese fermante attendue (ligne %u, colonne %u)\n",lexeme_courant().ligne, lexeme_courant().colonne);
+                    exit(1);
+                }
+                } else {
+                    printf("Erreur : parenthèse ouvrante attendue après le TAN(ligne %u, colonne %u)\n",lexeme_courant().ligne, lexeme_courant().colonne);
+                    exit(1);
+                }
+                break;
 		  	default:
 		  			printf("ERREUR : entier ou parenthese ouvrante attendu (ligne %u, colonne %u)\n",
                             lexeme_courant().ligne, lexeme_courant().colonne);

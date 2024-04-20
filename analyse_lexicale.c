@@ -20,8 +20,8 @@
 #include "lecture_caracteres.h"
 #include "analyse_lexicale.h"
 
-#define NB_MOTCLE 2
-char motCle[2][20] = {"sin", "cos"};
+#define NB_MOTCLE 3
+char motCle[3][20] = {"sin", "cos","tan",};
    /* --------------------------------------------------------------------- */
 
 
@@ -227,6 +227,7 @@ char motCle[2][20] = {"sin", "cos"};
                      switch(i) {
                         case 0: lexeme_en_cours.nature = SIN; break ;
                         case 1: lexeme_en_cours.nature = COS; break ;
+						case 2: lexeme_en_cours.nature = TAN; break ;
                         default:
 					    lexeme_en_cours.nature=IDF; 
 						break ;
@@ -361,7 +362,6 @@ char motCle[2][20] = {"sin", "cos"};
    char *Nature_vers_Chaine (Nature_Lexeme nature) {
 	switch (nature) {
 		case ENTIER: return "ENTIER" ;
-		//case CAR: return "CARACTERE";
 		case PLUS: return "PLUS" ;
       	case MOINS: return "MOINS" ;            
       	case MUL: return "MUL" ;              
@@ -371,7 +371,8 @@ char motCle[2][20] = {"sin", "cos"};
       	case PARO: return "PARO" ;              
       	case PARF: return "PARF" ;
 		case SIN: return "SIN" ;
-		case COS: return "COS" ;              
+		case COS: return "COS" ;
+		case TAN: return "TAN" ;              
       	case FIN_SEQUENCE: return "FIN_SEQUENCE" ;
 		case AFF: return "AFF";
 		case IDF: return "IDF";

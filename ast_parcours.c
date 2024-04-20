@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include "type_ast.h"
 #include <math.h>
-
+#define PI 3.14159265358979323846
+#define EPSILON 1e-12
 void aff_operateur(TypeOperateur op){
 	switch (op) {
 		case N_PLUS:
@@ -26,7 +27,12 @@ void aff_operateur(TypeOperateur op){
 		case N_SIN:
 			printf(" sin ") ;
 			break;
-
+		case N_COS:
+			printf(" cos ") ;
+			break;
+		case N_TAN:
+			printf(" tan ") ;
+			break;
 	} 
 }
 
@@ -37,18 +43,24 @@ void afficherA(Ast expr) {
 	// }
 	switch (expr->nature) {
                case OPERATION:
-			            if (expr->gauche != NULL) {
-                        printf("(");
-                        afficherA(expr->gauche);
-                        aff_operateur(expr->operateur) ;
-                        afficherA(expr->droite);
-                        printf(")");
-						}
+			            if (expr->gauche == NULL&&expr->operateur==N_MOINS) {
+							printf("(");
+						    aff_operateur(expr->operateur) ;
+                            afficherA(expr->droite);
+                            printf(")");
+						}//case normal (a+-*/b)
+						else if(expr->droite!=NULL&&expr->droite!=NULL){
+                            printf("(");
+                            afficherA(expr->gauche);
+                            aff_operateur(expr->operateur) ;
+                        	afficherA(expr->droite);
+                        	printf(")");
+						}//case fonction
 						else{
-						printf("(");
-						aff_operateur(expr->operateur) ;
-                        afficherA(expr->droite);
-                        printf(")");
+							printf("(");
+						    aff_operateur(expr->operateur) ;
+                            afficherA(expr->gauche);
+                            printf(")");
 						}
 			break ;
                case VALEUR:
@@ -62,6 +74,8 @@ void afficherA(Ast expr) {
 
 double evaluation(Ast expr) {
     double denominateur ;
+	double result, normalized_angle, fraction_part;
+    int k;
 	switch(expr->nature)
 	{
 	  case OPERATION:
@@ -103,6 +117,30 @@ double evaluation(Ast expr) {
 			// printf("pow=%lf",pow(evaluation(expr->gauche), evaluation(expr->droite)));
 			  return pow(evaluation(expr->gauche), evaluation(expr->droite));
 			
+			case N_SIN:
+                return sin(evaluation(expr->gauche)/180*PI);
+
+            case N_COS:
+                return cos(evaluation(expr->gauche)/180*PI);
+
+            case N_TAN:
+			    result = evaluation(expr->gauche)/180*PI;
+                    // normalisé à [0, 2π)
+                    normalized_angle = fmod(result, 2 * PI);
+                    if (normalized_angle < 0) {
+                        normalized_angle += 2 * PI;  // non negatif
+                    }
+                    // tester(π/2) + kπ
+                    fraction_part = fabs((normalized_angle - PI/2) / PI);
+                    k = round(fraction_part);  // entier le plus proche
+                    if (fabs(fraction_part - k) < EPSILON) {
+                        printf("Erreur : Le calcul de la tangente à un angle spécifique (π/2) + kπ n'est pas autorisé\n");
+                        exit(1);
+                    }
+                    return tan(result);
+                // return tan(evaluation(expr->gauche)/180*PI); 
+
+			  
 			default:
 			  exit(1);  // erreur operateur
 		}
