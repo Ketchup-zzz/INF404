@@ -32,6 +32,8 @@
       AFF, //=
       IDF, //caractere
       SEPINST,  //;
+      SIN,    //sin
+      COS,    //cos
     } Nature_Lexeme ;
 
 

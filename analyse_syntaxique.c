@@ -136,6 +136,40 @@
 				}
 			    avancer();
 				break;
+			case MOINS:
+			    avancer();
+				Ast A2;
+				// Ast A0;
+		        //A0=creer_valeur(0);
+				facteur(&A2);
+				*A1=creer_operation(MOINS,NULL,A2);
+			    break;
+			case SIN:
+			    printf("%d\n",lexeme_courant().nature);
+			    avancer();
+				printf("%d\n",lexeme_courant().nature);
+				if(lexeme_courant().nature==PARO)
+				{
+					avancer();
+					printf("%d\n",lexeme_courant().nature);
+					Ast x;
+					rec_eag(&x);
+					avancer();
+					printf("%d\n",lexeme_courant().nature);
+					if(lexeme_courant().nature==PARF)
+					{
+						*A1=creer_fonction(SIN,x);
+						avancer();
+					}else{
+						printf("ERREUR : parenthese fermante attendue (ligne %u, colonne %u)\n",
+                                                    lexeme_courant().ligne, lexeme_courant().colonne);
+		  			    exit(1);
+					}
+				}else{
+					printf("ERREUR : parenthese ouvrante attendue (ligne %u, colonne %u)\n",
+                                                    lexeme_courant().ligne, lexeme_courant().colonne);
+		  			exit(1);
+				}
 		  	default:
 		  			printf("ERREUR : entier ou parenthese ouvrante attendu (ligne %u, colonne %u)\n",
                             lexeme_courant().ligne, lexeme_courant().colonne);
@@ -207,12 +241,6 @@
 		}
 }
 
-// void rec_seq_aff(Ast *A1) 
-// {
-//     while (lexeme_courant().nature == IDF) {
-//         rec_aff(A1); 
-//     }
-// }
 
 void rec_seq_aff() {
     if (lexeme_courant().nature == IDF) {
@@ -221,38 +249,6 @@ void rec_seq_aff() {
     }
     // epsilon transition, do nothing for it
 }
-
-
-// void rec_aff(Ast *A1) 
-// {
-//     Ast A = NULL;
-//     int v;
-// 	char idf[20];
-//     if (lexeme_courant().nature == IDF) {
-// 		strcpy(idf, lexeme_courant().chaine);
-//         avancer();
-//     } else {
-//         printf("Identifiant attendu\n");
-//     }
-
-//     if (lexeme_courant().nature == AFF) {
-//         avancer();
-//     } else {
-//         printf("Symbole d'affectation attendu\n");
-//     }
-
-//     rec_eag(&A);
-// 	v=evaluation(A);
-// 	insererTS(idf,v);
-
-
-//     if (lexeme_courant().nature == SEPINST) {
-//         avancer();
-//     } else {
-//         printf("Séparateur d'affectation attendu\n");
-//     }
-// }
-	
 
 void rec_aff() {
 	// printf("OK1\n");

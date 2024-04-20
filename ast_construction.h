@@ -9,4 +9,5 @@ Ast creer_valeur(double val) ;
 // renvoie un arbre abstrait "feuille", de nature OPERATION  
 // et de valeur val
 
+Ast creer_fonction(TypeOperateur opr , Ast x);
 

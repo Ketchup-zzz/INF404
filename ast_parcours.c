@@ -23,28 +23,42 @@ void aff_operateur(TypeOperateur op){
 		case N_POW:
 			printf(" ^ ") ;
 			break;
+		case N_SIN:
+			printf(" sin ") ;
+			break;
 
 	} 
 }
 
 void afficherA(Ast expr) {
-	if(expr==NULL)
-	{
-		printf("NULL\n");
-	}
+	// if(expr==NULL)
+	// {
+	// 	printf("NULL\n");
+	// }
 	switch (expr->nature) {
                case OPERATION:
+			            if (expr->gauche != NULL) {
                         printf("(");
                         afficherA(expr->gauche);
                         aff_operateur(expr->operateur) ;
                         afficherA(expr->droite);
                         printf(")");
+						}
+						else{
+						printf("(");
+						aff_operateur(expr->operateur) ;
+                        afficherA(expr->droite);
+                        printf(")");
+						}
 			break ;
                case VALEUR:
                   	printf("%.2f", expr->valeur);
 			break ;
 	}
 }
+
+
+
 
 double evaluation(Ast expr) {
     double denominateur ;
@@ -58,7 +72,11 @@ double evaluation(Ast expr) {
 			  return evaluation(expr->gauche)*evaluation(expr->droite);
 	
 			case N_MOINS:
-			  return evaluation(expr->gauche)-evaluation(expr->droite);
+              if (expr->gauche == NULL) {
+                return -evaluation(expr->droite);
+              } else {
+                return evaluation(expr->gauche) - evaluation(expr->droite); 
+              }
 
 			case N_PLUS:
 			  return evaluation(expr->gauche)+evaluation(expr->droite);

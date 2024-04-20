@@ -20,6 +20,8 @@
 #include "lecture_caracteres.h"
 #include "analyse_lexicale.h"
 
+#define NB_MOTCLE 2
+char motCle[2][20] = {"sin", "cos"};
    /* --------------------------------------------------------------------- */
 
 
@@ -34,6 +36,8 @@
    int est_symbole(char c ) ;
    int est_car(char c);
    void reconnaitre_lexeme();
+   int estnegatif=0;
+   int boocle=1;
 
    /* --------------------------------------------------------------------- */
 
@@ -78,7 +82,7 @@
    //		soit un separateur,  soit le 1er caractere d'un lexeme
 
    void reconnaitre_lexeme() {
-      typedef enum {E_INIT, E_ENTIER,E_IDF,E_ENTIER_DECIMAL,E_FIN} Etat_Automate ;
+      typedef enum {E_INIT, E_ENTIER,E_CAR,E_ENTIER_DECIMAL,E_FIN} Etat_Automate ;
       Etat_Automate etat=E_INIT;
 
      // on commence par lire et ignorer les separateurs
@@ -91,6 +95,7 @@
      // on utilise ensuite un automate pour reconnaitre et construire le prochain lexeme
 
     while (etat != E_FIN) {
+		boocle++;
 
 	    switch (etat) {
 
@@ -109,7 +114,12 @@
                 	lexeme_en_cours.ligne = numero_ligne();
                 	lexeme_en_cours.colonne = numero_colonne();
 		     		ajouter_caractere (lexeme_en_cours.chaine, caractere_courant()) ;
-               		lexeme_en_cours.valeur = caractere_courant() - '0';
+					// printf("test=%d\n",estnegatif);
+					lexeme_en_cours.valeur = caractere_courant() - '0';
+					if(estnegatif==1&&boocle==1)
+					{
+                        lexeme_en_cours.valeur=lexeme_en_cours.valeur*(-1);
+					}
                		etat = E_ENTIER;
 		   	avancer_car() ;
 			break ;
@@ -121,7 +131,7 @@
 		     		ajouter_caractere (lexeme_en_cours.chaine, caractere_courant()) ;
 					//lexeme_en_cours.nature=CAR;
                		//lexeme_en_cours.valeur = (int)caractere_courant();
-               		etat = E_IDF;
+               		etat = E_CAR;
 		   	avancer_car() ;
 			break ;
 
@@ -133,38 +143,48 @@
                		  case '+':
                			lexeme_en_cours.nature = PLUS;
                			etat = E_FIN;
+						estnegatif=0;
 			   			break;
                		  case '-':
-               			lexeme_en_cours.nature = MOINS;
-               			etat = E_FIN;
-			   			break;
+               			  lexeme_en_cours.nature=MOINS;
+						  estnegatif=1;
+						//   printf("test=%d\n",estnegatif);
+						  etat=E_FIN;
+						break;
                		  case '*':
                			lexeme_en_cours.nature = MUL;
                			etat = E_FIN;
+						estnegatif=0;
 			   			break;
                		  case '/':
                			lexeme_en_cours.nature = DIV;
                			etat = E_FIN;
+						estnegatif=0;
 			   			break;
 					  case '%':
 					    lexeme_en_cours.nature = MOD;
 						etat=E_FIN;
+						estnegatif=0;
 						break;
 					  case '^':
 					    lexeme_en_cours.nature = POW;
 						etat=E_FIN;
+						estnegatif=0;
 						break;
                		  case '(':
                			lexeme_en_cours.nature = PARO;
                			etat = E_FIN;
+						estnegatif=0;
 			   			break;
                		  case ')':
                			lexeme_en_cours.nature = PARF;
                			etat = E_FIN;
+						estnegatif=0;
 			   			break;
 					  case '=':
 					    lexeme_en_cours.nature = AFF;
 						etat=E_FIN;
+						estnegatif=0;
 						break;
 					  case '.':
                         etat = E_FIN;
@@ -175,6 +195,7 @@
 					  case ';':
                			lexeme_en_cours.nature = SEPINST;
                			etat = E_FIN;
+						estnegatif=0;
 			   			break; 
 	       		  default:
 				printf("Erreur_Lexicale (ligne %u, colonne %u)\n", lexeme_en_cours.ligne, lexeme_en_cours.colonne) ;
@@ -190,27 +211,40 @@
 		break ;
 		
 
-		case E_IDF:  // reconnaissance d'un char
+		case E_CAR:  // reconnaissance d'un char
 			switch(nature_caractere(caractere_courant())) {
 			    case CARACTERE:
 		  			ajouter_caractere (lexeme_en_cours.chaine, caractere_courant()) ;
-					//lexeme_en_cours.nature=IDF;
                   	avancer_car ();
-					etat=E_IDF;
+					etat=E_CAR;
 					break ;
 
 				default:
                   	etat = E_FIN;
           	} ;
+			for (int i=0 ; i<NB_MOTCLE ; i++)
+                 if (strcmp(lexeme_en_cours.chaine, motCle[i]) == 0) {
+                     switch(i) {
+                        case 0: lexeme_en_cours.nature = SIN; break ;
+                        case 1: lexeme_en_cours.nature = COS; break ;
+                        default:
+					    lexeme_en_cours.nature=IDF; 
+						break ;
+                        }
+                    }
 		break;
 
 		case E_ENTIER:  // reconnaissance d'un entier
 			switch(nature_caractere(caractere_courant())) {
 			    case CHIFFRE:
 		  			ajouter_caractere (lexeme_en_cours.chaine, caractere_courant()) ;
-                  	lexeme_en_cours.valeur = lexeme_en_cours.valeur * 10 + caractere_courant() - '0';
-							// lexeme_en_cours.valeur=atof(lexeme_en_cours.chaine);
-                  	//etat = E_ENTIER;
+					lexeme_en_cours.valeur = lexeme_en_cours.valeur * 10 + caractere_courant() - '0';
+					// if(estnegatif==1&&boocle==1)
+					// {
+					// 	lexeme_en_cours.valeur*=-1;
+					// }
+					// lexeme_en_cours.valeur=atof(lexeme_en_cours.chaine);
+                  	etat = E_ENTIER;
                   	avancer_car ();
 					break;
 
@@ -233,11 +267,11 @@
     switch (nature_caractere(caractere_courant())) {
         case CHIFFRE:
             ajouter_caractere(lexeme_en_cours.chaine, caractere_courant());
-			lexeme_en_cours.valeur=atof(lexeme_en_cours.chaine);
-            //lexeme_en_cours.valdecimal = lexeme_en_cours.valdecimal*0.1 + (caractere_courant() - '0')*0.1;
-            // printf("%s",lexeme_en_cours.chaine);
-			// printf(" %lf",lexeme_en_cours.valeur);
-			// printf(" %lf",lexeme_courant().valeur);
+            lexeme_en_cours.valeur=atof(lexeme_en_cours.chaine);
+			// if(estnegatif==1&&boocle==1)
+			// {
+			// 	lexeme_en_cours.valeur*=-1;
+			// }
             avancer_car();
             break;
         default:
@@ -247,9 +281,8 @@
 		
 	    case E_FIN:  // etat final
 		break ;
-
-	    
 	  } ; // fin du switch(etat)
+	//    printf("boocle=%d\n",boocle);
 	} ; // fin du while (etat != fin)
    }
 
@@ -336,7 +369,9 @@
 		case MOD: return "MOD" ;
 		case POW: return "POW" ;              
       	case PARO: return "PARO" ;              
-      	case PARF: return "PARF" ;              
+      	case PARF: return "PARF" ;
+		case SIN: return "SIN" ;
+		case COS: return "COS" ;              
       	case FIN_SEQUENCE: return "FIN_SEQUENCE" ;
 		case AFF: return "AFF";
 		case IDF: return "IDF";
@@ -361,7 +396,7 @@
             printf(", chaine = %s, ", l.chaine) ;
             switch(l.nature) {
                  case ENTIER:
-                      printf("valeur = %2f", l.valeur);
+                      printf("valeur = %.2f", l.valeur);
                  default:
                       break;
             } ;
