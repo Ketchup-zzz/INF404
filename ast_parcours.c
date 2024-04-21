@@ -33,6 +33,9 @@ void aff_operateur(TypeOperateur op){
 		case N_TAN:
 			printf(" tan ") ;
 			break;
+		case N_DEG:
+			printf(" deg ") ;
+			break;
 	} 
 }
 
@@ -91,6 +94,9 @@ double evaluation(Ast expr) {
               } else {
                 return evaluation(expr->gauche) - evaluation(expr->droite); 
               }
+			
+			case N_DEG:
+              return evaluation(expr->gauche)/180*PI;
 
 			case N_PLUS:
 			  return evaluation(expr->gauche)+evaluation(expr->droite);
@@ -118,13 +124,13 @@ double evaluation(Ast expr) {
 			  return pow(evaluation(expr->gauche), evaluation(expr->droite));
 			
 			case N_SIN:
-                return sin(evaluation(expr->gauche)/180*PI);
+                return sin(evaluation(expr->gauche));
 
             case N_COS:
-                return cos(evaluation(expr->gauche)/180*PI);
+                return cos(evaluation(expr->gauche));
 
             case N_TAN:
-			    result = evaluation(expr->gauche)/180*PI;
+			    result = evaluation(expr->gauche);
                     // normalisé à [0, 2π)
                     normalized_angle = fmod(result, 2 * PI);
                     if (normalized_angle < 0) {

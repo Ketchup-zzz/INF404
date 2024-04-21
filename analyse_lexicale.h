@@ -35,6 +35,7 @@
       SIN,    //sin
       COS,    //cos
       TAN,    //TAN
+      DEG,    //deg (°)
     } Nature_Lexeme ;
 
 

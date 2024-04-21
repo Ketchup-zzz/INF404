@@ -195,6 +195,23 @@
                     exit(1);
                 }
                 break;
+			case DEG:
+			    avancer();
+                if(lexeme_courant().nature == PARO) {
+                    avancer();
+                    rec_eag(A1);
+                if(lexeme_courant().nature == PARF) {
+                    avancer();
+                    *A1 = creer_fonction(N_DEG, *A1);
+                } else {
+                    printf("ERREUR : parenthese fermante attendue (ligne %u, colonne %u)\n",lexeme_courant().ligne, lexeme_courant().colonne);
+                    exit(1);
+                }
+                } else {
+                    printf("Erreur : parenthèse ouvrante attendue après le DEG(ligne %u, colonne %u)\n",lexeme_courant().ligne, lexeme_courant().colonne);
+                    exit(1);
+                }
+                break;
 		  	default:
 		  			printf("ERREUR : entier ou parenthese ouvrante attendu (ligne %u, colonne %u)\n",
                             lexeme_courant().ligne, lexeme_courant().colonne);
