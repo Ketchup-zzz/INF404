@@ -286,15 +286,18 @@
 
 void rec_seq_aff() {
     if (lexeme_courant().nature == IDF) {
-        rec_aff();
+		rec_aff();
         rec_seq_aff();
+        // rec_aff(A);
+        // rec_seq_aff(A);
     }
     // epsilon transition, do nothing for it
 }
 
 void rec_aff() {
 	// printf("OK1\n");
-    Ast A;
+	Ast A;
+    //Ast A=*A1;
     int v;
     if (lexeme_courant().nature == IDF) {
         char idf[256];  // Assuming the identifier won't exceed 255 characters
@@ -306,6 +309,7 @@ void rec_aff() {
             v = evaluation(A);
             insererTS(idf, v);
 			// printf("OK2\n");
+			//*A1=A;
         } else {
             printf("ERREUR : opérateur d'affectation attendu\n");
             exit(1);
@@ -321,15 +325,20 @@ void rec_aff() {
     avancer();
 }
 /* ----------------------------------------------------------------------- */
-int analyser(char* nomFichier, Ast *A)
+int analyser(char* nomFichier, Ast *A,int modele)
 {
 	demarrer(nomFichier) ;
-	//rec_seq_aff();
-   	rec_eag(A);
-		
+	if(modele==1)
+	{
+       	rec_eag(A);
+	}else{
+        rec_seq_aff(A);
+	}	
 	if ((lexeme_courant().nature == FIN_SEQUENCE)) {
 		/* syntaxe correcte */
-		printf("\nSyntaxe correcte\n"); 
+		printf("\nSyntaxe correcte\n");
+		// if(A==NULL)
+		// printf("NULL");
 		afficherA (*A);  // on affiche l'AST
 		afficheTS();
 		printf("\n");
