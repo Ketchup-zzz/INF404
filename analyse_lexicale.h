@@ -36,6 +36,7 @@
       COS,    //cos
       TAN,    //TAN
       DEG,    //deg (°)
+      ABS,    //abs
     } Nature_Lexeme ;
 
 

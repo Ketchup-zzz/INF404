@@ -36,6 +36,9 @@ void aff_operateur(TypeOperateur op){
 		case N_DEG:
 			printf(" deg ") ;
 			break;
+		case N_ABS:
+			printf(" abs ") ;
+			break;
 	} 
 }
 
@@ -145,6 +148,9 @@ double evaluation(Ast expr) {
                     }
                     return tan(result);
                 // return tan(evaluation(expr->gauche)/180*PI); 
+
+			case N_ABS:
+				return fabs(evaluation(expr->gauche));
 
 			  
 			default:
